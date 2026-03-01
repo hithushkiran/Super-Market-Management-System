@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Disabled to allow HTTP from React frontend
 app.UseCors("FrontendPolicy");
 app.UseAuthorization();
 
