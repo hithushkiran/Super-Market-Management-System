@@ -1,0 +1,12 @@
+{
+  "name": "supermarket-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E tests for Supermarket Management System",
+  "scripts": {
+    "test": "node product.test.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.27.0",
+    "chromedriver": "^131.0.0"
+  }
+}

@@ -1,0 +1,1492 @@
+{
+	"id": "6084c2e9-aff7-4222-9dfb-62bb9b34601c",
+	"name": "Supermarket Management API – Sprint 1",
+	"timestamp": "2026-03-02T16:53:10.387Z",
+	"collection_id": "52828509-7f7210ab-b772-47b6-8847-da99a4fc97ed",
+	"folder_id": 0,
+	"environment_id": "52828509-42bc2d66-f4f7-4fca-8e34-1809250d196f",
+	"totalPass": 76,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-03-02T16:53:04.517Z",
+	"totalFail": 19,
+	"results": [
+		{
+			"id": "3e2d278a-75a9-492b-9840-7d3ea4f7a560",
+			"name": "API Reachable",
+			"url": "http://localhost:5224/api/products",
+			"time": 1118,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"API is reachable – status 200": true,
+				"Response time < 2000ms": true,
+				"Response is a JSON array": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"API is reachable – status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time < 2000ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response is a JSON array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				1118
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"API is reachable – status 200": true,
+					"Response time < 2000ms": true,
+					"Response is a JSON array": true
+				}
+			]
+		},
+		{
+			"id": "0e80275b-6d66-4e3a-99c6-2985aedeb7fd",
+			"name": "TC-G01 Get All Products",
+			"url": "http://localhost:5224/api/products",
+			"time": 72,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-G01 Status 200": true,
+				"TC-G01 Body is an array": true,
+				"TC-G03 Each product has required fields": true,
+				"TC-G03 isLowStock is true when quantity < 10": true,
+				"TC-G03 price is a positive number": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-G01 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-G01 Body is an array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-G03 Each product has required fields": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-G03 isLowStock is true when quantity < 10": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-G03 price is a positive number": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				72
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-G01 Status 200": true,
+					"TC-G01 Body is an array": true,
+					"TC-G03 Each product has required fields": true,
+					"TC-G03 isLowStock is true when quantity < 10": true,
+					"TC-G03 price is a positive number": true
+				}
+			]
+		},
+		{
+			"id": "c1adcad8-64f5-46df-9e64-9006cc63956e",
+			"name": "TC-GI01 Get Product by Valid ID",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 165,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-GI01 Status 200": false,
+				"TC-GI02 All fields present": false,
+				"TC-GI01 id matches request": false,
+				"TC-GI10 isLowStock correct": false
+			},
+			"testPassFailCounts": {
+				"TC-GI01 Status 200": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-GI02 All fields present": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-GI01 id matches request": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-GI10 isLowStock correct": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				165
+			],
+			"allTests": [
+				{
+					"TC-GI01 Status 200": false,
+					"TC-GI02 All fields present": false,
+					"TC-GI01 id matches request": false,
+					"TC-GI10 isLowStock correct": false
+				}
+			]
+		},
+		{
+			"id": "c73c34b8-259d-4e96-8e41-06f76c3e2b80",
+			"name": "TC-GI06 Get Product – Non-Existent ID (404)",
+			"url": "http://localhost:5224/api/products/99999",
+			"time": 13,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-GI06 Status 404": true
+			},
+			"testPassFailCounts": {
+				"TC-GI06 Status 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				13
+			],
+			"allTests": [
+				{
+					"TC-GI06 Status 404": true
+				}
+			]
+		},
+		{
+			"id": "5d62bbd2-9300-4f07-ac4f-ce9c514c6757",
+			"name": "TC-GI07 Get Product – String ID (400)",
+			"url": "http://localhost:5224/api/products/abc",
+			"time": 5,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-GI07 Status 400 for string ID": false
+			},
+			"testPassFailCounts": {
+				"TC-GI07 Status 400 for string ID": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"TC-GI07 Status 400 for string ID": false
+				}
+			]
+		},
+		{
+			"id": "f709d783-5fe8-4cc6-bdbf-82315727fe28",
+			"name": "TC-GI08 Get Product – Negative ID (404)",
+			"url": "http://localhost:5224/api/products/-1",
+			"time": 12,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-GI08 Status 404 for negative ID": true
+			},
+			"testPassFailCounts": {
+				"TC-GI08 Status 404 for negative ID": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"TC-GI08 Status 404 for negative ID": true
+				}
+			]
+		},
+		{
+			"id": "053ef4e6-0332-4271-a93b-ed282f34b604",
+			"name": "TC-GC01 Get Products by Category",
+			"url": "http://localhost:5224/api/products/category/Dairy",
+			"time": 35,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-GC01 Status 200": true,
+				"TC-GC01 Response is an array": true,
+				"TC-GC07 All results match requested category": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GC01 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GC01 Response is an array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GC07 All results match requested category": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				35
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-GC01 Status 200": true,
+					"TC-GC01 Response is an array": true,
+					"TC-GC07 All results match requested category": true
+				}
+			]
+		},
+		{
+			"id": "e3c2178b-9111-492c-9e7b-6e12af55e633",
+			"name": "TC-GC04 Get Products – Non-Existent Category (Empty Array)",
+			"url": "http://localhost:5224/api/products/category/NonExistentCategory999",
+			"time": 10,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-GC04 Status 200 (not 404)": true,
+				"TC-GC04 Response is empty array": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GC04 Status 200 (not 404)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GC04 Response is empty array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-GC04 Status 200 (not 404)": true,
+					"TC-GC04 Response is empty array": true
+				}
+			]
+		},
+		{
+			"id": "f211a4d5-a5b8-403f-8a19-e3d4a1311008",
+			"name": "TC-LS01 Get Low Stock – Default Threshold (10)",
+			"url": "http://localhost:5224/api/products/lowstock",
+			"time": 23,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-LS01 Status 200": true,
+				"TC-LS08 All results have quantity < 10": true,
+				"TC-LS08 All results have isLowStock=true": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS01 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS08 All results have quantity < 10": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS08 All results have isLowStock=true": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				23
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-LS01 Status 200": true,
+					"TC-LS08 All results have quantity < 10": true,
+					"TC-LS08 All results have isLowStock=true": true
+				}
+			]
+		},
+		{
+			"id": "7cc222d3-ce71-4d74-80f5-d960a2227972",
+			"name": "TC-LS02 Get Low Stock – Custom Threshold (6)",
+			"url": "http://localhost:5224/api/products/lowstock?threshold=6",
+			"time": 16,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-LS02 Status 200": true,
+				"TC-LS02 All results have quantity < 6": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS02 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS02 All results have quantity < 6": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-LS02 Status 200": true,
+					"TC-LS02 All results have quantity < 6": true
+				}
+			]
+		},
+		{
+			"id": "ae287016-6335-4e98-8050-4329f5080f5c",
+			"name": "TC-LS03 Get Low Stock – Threshold 0 (Empty Array)",
+			"url": "http://localhost:5224/api/products/lowstock?threshold=0",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-LS03 Status 200": true,
+				"TC-LS03 Empty array returned": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS03 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS03 Empty array returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-LS03 Status 200": true,
+					"TC-LS03 Empty array returned": true
+				}
+			]
+		},
+		{
+			"id": "11acf13f-5966-4644-9a08-53b00121ce94",
+			"name": "TC-LS06 Get Low Stock – Negative Threshold (400)",
+			"url": "http://localhost:5224/api/products/lowstock?threshold=-1",
+			"time": 7,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-LS06 Status 400": true,
+				"TC-LS06 Error message correct": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-LS06 Status 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-LS06 Error message correct": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-LS06 Status 400": true,
+					"TC-LS06 Error message correct": true
+				}
+			]
+		},
+		{
+			"id": "3b2c56c0-2e64-4a93-9b42-f30ab4367e39",
+			"name": "TC-LS07 Get Low Stock – Non-Integer Threshold (400)",
+			"url": "http://localhost:5224/api/products/lowstock?threshold=abc",
+			"time": 22,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-LS07 Status 400": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-LS07 Status 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				22
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-LS07 Status 400": true
+				}
+			]
+		},
+		{
+			"id": "39f6261d-7221-444e-804e-636e76ddc7d0",
+			"name": "TC-P01 Create Product – Valid (All Fields)",
+			"url": "http://localhost:5224/api/products",
+			"time": 428,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-P01 Status 201 Created": true,
+				"TC-P01 Response has a numeric id": true,
+				"TC-P01 Name matches submitted value": true,
+				"TC-P01 Price matches submitted value": true,
+				"TC-P01 isLowStock false for qty=100": true,
+				"TC-P03 Location header present": false,
+				"TC-P04 createdAt is set": true,
+				"TC-GI03 updatedAt is null on new product": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P01 Status 201 Created": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P01 Response has a numeric id": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P01 Name matches submitted value": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P01 Price matches submitted value": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P01 isLowStock false for qty=100": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P03 Location header present": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P04 createdAt is set": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GI03 updatedAt is null on new product": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				428
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-P01 Status 201 Created": true,
+					"TC-P01 Response has a numeric id": true,
+					"TC-P01 Name matches submitted value": true,
+					"TC-P01 Price matches submitted value": true,
+					"TC-P01 isLowStock false for qty=100": true,
+					"TC-P03 Location header present": false,
+					"TC-P04 createdAt is set": true,
+					"TC-GI03 updatedAt is null on new product": true
+				}
+			]
+		},
+		{
+			"id": "48c909e6-8742-4169-8c87-04640df3fc3a",
+			"name": "TC-P02 Create Product – No Image URL",
+			"url": "http://localhost:5224/api/products",
+			"time": 10,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-P02 Status 201": true,
+				"TC-P02 imageUrl is null": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P02 Status 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P02 imageUrl is null": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-P02 Status 201": true,
+					"TC-P02 imageUrl is null": true
+				}
+			]
+		},
+		{
+			"id": "8a27a843-08bf-4a2d-ac85-ad3faa1c41ec",
+			"name": "TC-P05 Create Product – Name Min Length (2 chars)",
+			"url": "http://localhost:5224/api/products",
+			"time": 8,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-P05 Status 201 for min-length name": true,
+				"TC-P08 Qty=0 gives isLowStock=true": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P05 Status 201 for min-length name": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P08 Qty=0 gives isLowStock=true": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-P05 Status 201 for min-length name": true,
+					"TC-P08 Qty=0 gives isLowStock=true": true
+				}
+			]
+		},
+		{
+			"id": "76c3eba2-8bd3-4826-a562-b36b84602717",
+			"name": "TC-P07 Create Product – Price at Minimum (0.01)",
+			"url": "http://localhost:5224/api/products",
+			"time": 10,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-P07 Status 201 for min price 0.01": true,
+				"TC-P07 Price is 0.01": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P07 Status 201 for min price 0.01": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P07 Price is 0.01": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-P07 Status 201 for min price 0.01": true,
+					"TC-P07 Price is 0.01": true
+				}
+			]
+		},
+		{
+			"id": "4b8239a6-4910-42a6-b9e4-9284da0db66e",
+			"name": "TC-P09 Create Product – Past Expiry Date",
+			"url": "http://localhost:5224/api/products",
+			"time": 16,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-P09 Status 201": true,
+				"TC-P09 isExpired is true for past expiry": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P09 Status 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-P09 isExpired is true for past expiry": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				16
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-P09 Status 201": true,
+					"TC-P09 isExpired is true for past expiry": true
+				}
+			]
+		},
+		{
+			"id": "67ef9616-e17b-4b42-8300-758673776784",
+			"name": "TC-P11 Create Product – Missing Name (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 5,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P11 Status 400 for missing name": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P11 Status 400 for missing name": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P11 Status 400 for missing name": true
+				}
+			]
+		},
+		{
+			"id": "013a7858-5907-4489-b5e5-6a839dcdcf03",
+			"name": "TC-P12 Create Product – Name Too Short (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 37,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P12 Status 400": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P12 Status 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P12 Status 400": true
+				}
+			]
+		},
+		{
+			"id": "dd412aa3-4d43-4161-b6a1-624c65678bb1",
+			"name": "TC-P17 Create Product – Price Zero (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 35,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P17 Status 400": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P17 Status 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				35
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P17 Status 400": true
+				}
+			]
+		},
+		{
+			"id": "ea5cb2d5-f576-4d97-83a5-375caaf0b1f9",
+			"name": "TC-P18 Create Product – Negative Price (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 5,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P18 Status 400": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P18 Status 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P18 Status 400": true
+				}
+			]
+		},
+		{
+			"id": "2da06a13-56d1-4924-b43c-5dc6f8c43012",
+			"name": "TC-P20 Create Product – Negative Quantity (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 9,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P20 Status 400": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P20 Status 400": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P20 Status 400": true
+				}
+			]
+		},
+		{
+			"id": "d3d21196-6ef4-40a5-b542-8cdb8fd71e9f",
+			"name": "TC-P23 Create Product – Invalid Image URL (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P23 Status 400 for invalid imageUrl": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P23 Status 400 for invalid imageUrl": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P23 Status 400 for invalid imageUrl": true
+				}
+			]
+		},
+		{
+			"id": "6dade7a7-92e7-4538-8376-dcbd4730eebf",
+			"name": "TC-P24 Create Product – Empty Body (400)",
+			"url": "http://localhost:5224/api/products",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-P24 Status 400 for empty body": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-P24 Status 400 for empty body": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-P24 Status 400 for empty body": true
+				}
+			]
+		},
+		{
+			"id": "eda16151-ef3d-4e0c-909e-ded89d989a7b",
+			"name": "TC-U01 Update Product – Valid Payload",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 88,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-U01 Status 200": true,
+				"TC-U01 Name updated": true,
+				"TC-U01 Price updated": true,
+				"TC-U02 updatedAt is now set (not null)": true,
+				"TC-U05 isLowStock still false for qty=45": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U01 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U01 Name updated": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U01 Price updated": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U02 updatedAt is now set (not null)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U05 isLowStock still false for qty=45": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				88
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-U01 Status 200": true,
+					"TC-U01 Name updated": true,
+					"TC-U01 Price updated": true,
+					"TC-U02 updatedAt is now set (not null)": true,
+					"TC-U05 isLowStock still false for qty=45": true
+				}
+			]
+		},
+		{
+			"id": "7a4b540d-9583-4d77-9162-cb2455f5b4e7",
+			"name": "TC-U05 Update Product – Quantity to 0 (isLowStock true)",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 25,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Content-Type is JSON": true,
+				"TC-U05 Status 200": true,
+				"TC-U05 quantity=0 gives isLowStock=true": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U05 Status 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-U05 quantity=0 gives isLowStock=true": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				25
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": true,
+					"TC-U05 Status 200": true,
+					"TC-U05 quantity=0 gives isLowStock=true": true
+				}
+			]
+		},
+		{
+			"id": "5b0b6983-861c-44cb-a9a7-037c3d119a16",
+			"name": "TC-U09 Update Product – Non-Existent ID (404)",
+			"url": "http://localhost:5224/api/products/99999",
+			"time": 9,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-U09 Status 404": true
+			},
+			"testPassFailCounts": {
+				"TC-U09 Status 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				9
+			],
+			"allTests": [
+				{
+					"TC-U09 Status 404": true
+				}
+			]
+		},
+		{
+			"id": "ebe2880b-d270-4f3c-912c-eaa586850ca3",
+			"name": "TC-U10 Update Product – Missing Name (400)",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 8,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-U10 Status 400 for missing name": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-U10 Status 400 for missing name": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-U10 Status 400 for missing name": true
+				}
+			]
+		},
+		{
+			"id": "9b0519cf-8a01-4190-b846-ad5883d93aa3",
+			"name": "TC-U12 Update Product – Price Zero (400)",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Content-Type is JSON": false,
+				"TC-U12 Status 400 for price=0": true
+			},
+			"testPassFailCounts": {
+				"Content-Type is JSON": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-U12 Status 400 for price=0": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Content-Type is JSON": false,
+					"TC-U12 Status 400 for price=0": true
+				}
+			]
+		},
+		{
+			"id": "0f9f7de3-d19a-4cb1-82cf-294fcc05b276",
+			"name": "TC-U16 Update Product – String ID (400)",
+			"url": "http://localhost:5224/api/products/abc",
+			"time": 4,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-U16 Status 400 for string ID": false
+			},
+			"testPassFailCounts": {
+				"TC-U16 Status 400 for string ID": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"TC-U16 Status 400 for string ID": false
+				}
+			]
+		},
+		{
+			"id": "fd50d320-e159-47d4-a778-2ba30fb2e419",
+			"name": "TC-DEL04 Delete Non-Existent Product (404)",
+			"url": "http://localhost:5224/api/products/99999",
+			"time": 37,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-DEL04 Status 404": true
+			},
+			"testPassFailCounts": {
+				"TC-DEL04 Status 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				37
+			],
+			"allTests": [
+				{
+					"TC-DEL04 Status 404": true
+				}
+			]
+		},
+		{
+			"id": "36f720a0-42be-4532-a324-50669068563f",
+			"name": "TC-DEL06 Delete Product – String ID (400)",
+			"url": "http://localhost:5224/api/products/abc",
+			"time": 3,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-DEL06 Status 400 for string ID": false
+			},
+			"testPassFailCounts": {
+				"TC-DEL06 Status 400 for string ID": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"TC-DEL06 Status 400 for string ID": false
+				}
+			]
+		},
+		{
+			"id": "f75d1a8b-c545-4c6c-b1fb-cdf82d04edba",
+			"name": "TC-DEL01 Delete Product – Valid ID (204)",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 41,
+			"responseCode": {
+				"code": 204,
+				"name": "No Content"
+			},
+			"tests": {
+				"TC-DEL01 Status 204 No Content": true,
+				"TC-DEL01 Body is empty": true
+			},
+			"testPassFailCounts": {
+				"TC-DEL01 Status 204 No Content": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DEL01 Body is empty": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				41
+			],
+			"allTests": [
+				{
+					"TC-DEL01 Status 204 No Content": true,
+					"TC-DEL01 Body is empty": true
+				}
+			]
+		},
+		{
+			"id": "8377b829-463a-4b8f-ac18-7c086518f8f6",
+			"name": "TC-DEL02 Verify Deleted Product Returns 404",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 10,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-DEL02 Deleted product returns 404": true
+			},
+			"testPassFailCounts": {
+				"TC-DEL02 Deleted product returns 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				10
+			],
+			"allTests": [
+				{
+					"TC-DEL02 Deleted product returns 404": true
+				}
+			]
+		},
+		{
+			"id": "d9632af1-cc25-4c22-9d13-76b55ce157a5",
+			"name": "TC-DEL05 Delete Same Product Twice (Second = 404)",
+			"url": "http://localhost:5224/api/products/1",
+			"time": 12,
+			"responseCode": {
+				"code": 404,
+				"name": "Not Found"
+			},
+			"tests": {
+				"TC-DEL05 Second delete returns 404": true
+			},
+			"testPassFailCounts": {
+				"TC-DEL05 Second delete returns 404": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"TC-DEL05 Second delete returns 404": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 2325,
+	"collection": {
+		"requests": [
+			{
+				"id": "3e2d278a-75a9-492b-9840-7d3ea4f7a560",
+				"method": "GET"
+			},
+			{
+				"id": "0e80275b-6d66-4e3a-99c6-2985aedeb7fd",
+				"method": "GET"
+			},
+			{
+				"id": "c1adcad8-64f5-46df-9e64-9006cc63956e",
+				"method": "GET"
+			},
+			{
+				"id": "c73c34b8-259d-4e96-8e41-06f76c3e2b80",
+				"method": "GET"
+			},
+			{
+				"id": "5d62bbd2-9300-4f07-ac4f-ce9c514c6757",
+				"method": "GET"
+			},
+			{
+				"id": "f709d783-5fe8-4cc6-bdbf-82315727fe28",
+				"method": "GET"
+			},
+			{
+				"id": "053ef4e6-0332-4271-a93b-ed282f34b604",
+				"method": "GET"
+			},
+			{
+				"id": "e3c2178b-9111-492c-9e7b-6e12af55e633",
+				"method": "GET"
+			},
+			{
+				"id": "f211a4d5-a5b8-403f-8a19-e3d4a1311008",
+				"method": "GET"
+			},
+			{
+				"id": "7cc222d3-ce71-4d74-80f5-d960a2227972",
+				"method": "GET"
+			},
+			{
+				"id": "ae287016-6335-4e98-8050-4329f5080f5c",
+				"method": "GET"
+			},
+			{
+				"id": "11acf13f-5966-4644-9a08-53b00121ce94",
+				"method": "GET"
+			},
+			{
+				"id": "3b2c56c0-2e64-4a93-9b42-f30ab4367e39",
+				"method": "GET"
+			},
+			{
+				"id": "39f6261d-7221-444e-804e-636e76ddc7d0",
+				"method": "POST"
+			},
+			{
+				"id": "48c909e6-8742-4169-8c87-04640df3fc3a",
+				"method": "POST"
+			},
+			{
+				"id": "8a27a843-08bf-4a2d-ac85-ad3faa1c41ec",
+				"method": "POST"
+			},
+			{
+				"id": "76c3eba2-8bd3-4826-a562-b36b84602717",
+				"method": "POST"
+			},
+			{
+				"id": "4b8239a6-4910-42a6-b9e4-9284da0db66e",
+				"method": "POST"
+			},
+			{
+				"id": "67ef9616-e17b-4b42-8300-758673776784",
+				"method": "POST"
+			},
+			{
+				"id": "013a7858-5907-4489-b5e5-6a839dcdcf03",
+				"method": "POST"
+			},
+			{
+				"id": "dd412aa3-4d43-4161-b6a1-624c65678bb1",
+				"method": "POST"
+			},
+			{
+				"id": "ea5cb2d5-f576-4d97-83a5-375caaf0b1f9",
+				"method": "POST"
+			},
+			{
+				"id": "2da06a13-56d1-4924-b43c-5dc6f8c43012",
+				"method": "POST"
+			},
+			{
+				"id": "d3d21196-6ef4-40a5-b542-8cdb8fd71e9f",
+				"method": "POST"
+			},
+			{
+				"id": "6dade7a7-92e7-4538-8376-dcbd4730eebf",
+				"method": "POST"
+			},
+			{
+				"id": "eda16151-ef3d-4e0c-909e-ded89d989a7b",
+				"method": "PUT"
+			},
+			{
+				"id": "7a4b540d-9583-4d77-9162-cb2455f5b4e7",
+				"method": "PUT"
+			},
+			{
+				"id": "5b0b6983-861c-44cb-a9a7-037c3d119a16",
+				"method": "PUT"
+			},
+			{
+				"id": "ebe2880b-d270-4f3c-912c-eaa586850ca3",
+				"method": "PUT"
+			},
+			{
+				"id": "9b0519cf-8a01-4190-b846-ad5883d93aa3",
+				"method": "PUT"
+			},
+			{
+				"id": "0f9f7de3-d19a-4cb1-82cf-294fcc05b276",
+				"method": "PUT"
+			},
+			{
+				"id": "fd50d320-e159-47d4-a778-2ba30fb2e419",
+				"method": "DELETE"
+			},
+			{
+				"id": "36f720a0-42be-4532-a324-50669068563f",
+				"method": "DELETE"
+			},
+			{
+				"id": "f75d1a8b-c545-4c6c-b1fb-cdf82d04edba",
+				"method": "DELETE"
+			},
+			{
+				"id": "8377b829-463a-4b8f-ac18-7c086518f8f6",
+				"method": "GET"
+			},
+			{
+				"id": "d9632af1-cc25-4c22-9d13-76b55ce157a5",
+				"method": "DELETE"
+			}
+		]
+	}
+}
