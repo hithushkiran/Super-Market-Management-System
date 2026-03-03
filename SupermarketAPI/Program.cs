@@ -17,12 +17,18 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Connection string is read from:
+// - Azure App Service: ConnectionStrings__DefaultConnection environment variable
+// - Local development: appsettings.json / appsettings.Development.json
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("DefaultConnection connection string was not found.");
+        ?? throw new InvalidOperationException(
+            "DefaultConnection connection string was not found. " +
+            "Set the 'ConnectionStrings__DefaultConnection' environment variable in Azure App Service, " +
+            "or define it in appsettings.json for local development.");
 
-    options.UseMySql(connectionString, ResolveServerVersion(connectionString));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -69,6 +75,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+if (app.Environment.IsProduction())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var startupLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        startupLogger.LogInformation("Production environment detected. Applying EF Core migrations...");
+        dbContext.Database.Migrate();
+        startupLogger.LogInformation("EF Core migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogError(ex, "An error occurred while applying EF Core migrations on startup.");
+        throw;
+    }
+}
+
 // app.UseHttpsRedirection(); // Disabled to allow HTTP from React frontend
 app.UseCors("FrontendPolicy");
 app.UseAuthorization();
@@ -77,14 +102,4 @@ app.MapControllers();
 
 app.Run();
 
-static ServerVersion ResolveServerVersion(string connectionString)
-{
-    try
-    {
-        return ServerVersion.AutoDetect(connectionString);
-    }
-    catch
-    {
-        return new MySqlServerVersion(new Version(9, 3, 0));
-    }
-}
+
