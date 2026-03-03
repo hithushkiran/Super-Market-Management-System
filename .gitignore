@@ -107,3 +107,11 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# 🔐 ASP.NET Core sensitive config files (contain credentials or environment-specific secrets)
+SupermarketAPI/appsettings.Development.json
+SupermarketAPI/appsettings.Production.json
+
+# 🚀 Publish output (build artifacts, should not be committed)
+SupermarketAPI/publish/
+SupermarketAPI/publish.zip
