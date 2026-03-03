@@ -1,0 +1,1315 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-0002-0002-0002-supermarket02",
+    "name": "Supermarket Management API – Sprint 1",
+    "description": "Complete API test collection for the Supermarket Management System.\nBase URL: http://localhost:5224/api\n\nImport the companion environment file (SupermarketAPI.postman_environment.json) before running.\n\nFolder order follows the recommended test execution sequence:\n1. Seed / Health Check\n2. GET endpoints\n3. POST (creates a product; auto-saves ID to {{new_product_id}})\n4. PUT\n5. DELETE",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5224/api",
+      "type": "string"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": ["// Collection-level pre-request: nothing required"]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Collection-level test: verify Content-Type on all non-204 responses",
+          "if (pm.response.code !== 204 && pm.response.code !== 404) {",
+          "    pm.test('Content-Type is JSON', function () {",
+          "        pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "01 – Health Check",
+      "item": [
+        {
+          "name": "API Reachable",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "Smoke test – confirm the API is running and reachable before executing the rest of the collection."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('API is reachable – status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response time < 2000ms', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test('Response is a JSON array', function () {",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 – GET /api/products",
+      "item": [
+        {
+          "name": "TC-G01 Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-G01 – Returns all products. Expects 200 and a JSON array."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-G01 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-G01 Body is an array', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('TC-G03 Each product has required fields', function () {",
+                  "    var products = pm.response.json();",
+                  "    if (products.length === 0) { return; }",
+                  "    var required = ['id','name','category','price','quantity','expiryDate','createdAt','isLowStock','isExpired'];",
+                  "    products.forEach(function(p) {",
+                  "        required.forEach(function(f) {",
+                  "            pm.expect(p, 'Product missing field: ' + f).to.have.property(f);",
+                  "        });",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('TC-G03 isLowStock is true when quantity < 10', function () {",
+                  "    var products = pm.response.json();",
+                  "    products.forEach(function(p) {",
+                  "        var expected = p.quantity < 10;",
+                  "        pm.expect(p.isLowStock, 'isLowStock mismatch for product id=' + p.id).to.eql(expected);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('TC-G03 price is a positive number', function () {",
+                  "    var products = pm.response.json();",
+                  "    products.forEach(function(p) {",
+                  "        pm.expect(p.price, 'Price for id=' + p.id).to.be.above(0);",
+                  "    });",
+                  "});",
+                  "",
+                  "// Auto-save first product ID for use in later requests",
+                  "var products = pm.response.json();",
+                  "if (products.length > 0) {",
+                  "    pm.environment.set('product_id', products[0].id);",
+                  "    console.log('Auto-set product_id =', products[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 – GET /api/products/{id}",
+      "item": [
+        {
+          "name": "TC-GI01 Get Product by Valid ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{product_id}}"]
+            },
+            "description": "TC-GI01 / TC-GI02 – Get a single product. Expects 200 and all response fields."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GI01 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var json = pm.response.json();",
+                  "",
+                  "pm.test('TC-GI02 All fields present', function () {",
+                  "    var fields = ['id','name','category','price','quantity','expiryDate','imageUrl','createdAt','updatedAt','isLowStock','isExpired'];",
+                  "    fields.forEach(function(f) {",
+                  "        pm.expect(json, 'Missing field: ' + f).to.have.property(f);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('TC-GI01 id matches request', function () {",
+                  "    pm.expect(json.id).to.eql(parseInt(pm.environment.get('product_id')));",
+                  "});",
+                  "",
+                  "pm.test('TC-GI10 isLowStock correct', function () {",
+                  "    pm.expect(json.isLowStock).to.eql(json.quantity < 10);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-GI06 Get Product – Non-Existent ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/99999",
+              "host": ["{{base_url}}"],
+              "path": ["products", "99999"]
+            },
+            "description": "TC-GI06 – Expects 404 when product does not exist."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GI06 Status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-GI07 Get Product – String ID (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/abc",
+              "host": ["{{base_url}}"],
+              "path": ["products", "abc"]
+            },
+            "description": "TC-GI07 – Route constraint {id:int} rejects non-integer. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GI07 Status 400 for string ID', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-GI08 Get Product – Negative ID (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/-1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "-1"]
+            },
+            "description": "TC-GI08 – Negative ID accepted by route but no product exists. Expects 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GI08 Status 404 for negative ID', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 – GET /api/products/category/{category}",
+      "item": [
+        {
+          "name": "TC-GC01 Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/category/{{test_category}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "category", "{{test_category}}"]
+            },
+            "description": "TC-GC01 / TC-GC02 / TC-GC07 – Returns products matching the category."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GC01 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-GC01 Response is an array', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('TC-GC07 All results match requested category', function () {",
+                  "    var products = pm.response.json();",
+                  "    var expectedCategory = pm.environment.get('test_category');",
+                  "    products.forEach(function(p) {",
+                  "        pm.expect(p.category.toLowerCase()).to.eql(expectedCategory.toLowerCase());",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-GC04 Get Products – Non-Existent Category (Empty Array)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/category/NonExistentCategory999",
+              "host": ["{{base_url}}"],
+              "path": ["products", "category", "NonExistentCategory999"]
+            },
+            "description": "TC-GC04 – Non-existent category returns 200 with empty array, NOT 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-GC04 Status 200 (not 404)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-GC04 Response is empty array', function () {",
+                  "    var body = pm.response.json();",
+                  "    pm.expect(body).to.be.an('array').that.is.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 – GET /api/products/lowstock",
+      "item": [
+        {
+          "name": "TC-LS01 Get Low Stock – Default Threshold (10)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/lowstock",
+              "host": ["{{base_url}}"],
+              "path": ["products", "lowstock"]
+            },
+            "description": "TC-LS01 / TC-LS08 – Default threshold=10. All returned products should have quantity < 10."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-LS01 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-LS08 All results have quantity < 10', function () {",
+                  "    var products = pm.response.json();",
+                  "    products.forEach(function(p) {",
+                  "        pm.expect(p.quantity, 'Product id=' + p.id + ' quantity=' + p.quantity).to.be.below(10);",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('TC-LS08 All results have isLowStock=true', function () {",
+                  "    var products = pm.response.json();",
+                  "    products.forEach(function(p) {",
+                  "        pm.expect(p.isLowStock, 'isLowStock for id=' + p.id).to.be.true;",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-LS02 Get Low Stock – Custom Threshold (6)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/lowstock?threshold=6",
+              "host": ["{{base_url}}"],
+              "path": ["products", "lowstock"],
+              "query": [{ "key": "threshold", "value": "6" }]
+            },
+            "description": "TC-LS02 – Custom threshold=6. All results should have quantity < 6."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-LS02 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-LS02 All results have quantity < 6', function () {",
+                  "    var products = pm.response.json();",
+                  "    products.forEach(function(p) {",
+                  "        pm.expect(p.quantity, 'id=' + p.id).to.be.below(6);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-LS03 Get Low Stock – Threshold 0 (Empty Array)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/lowstock?threshold=0",
+              "host": ["{{base_url}}"],
+              "path": ["products", "lowstock"],
+              "query": [{ "key": "threshold", "value": "0" }]
+            },
+            "description": "TC-LS03 – threshold=0. No product has quantity < 0, so empty array expected."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-LS03 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-LS03 Empty array returned', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array').that.is.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-LS06 Get Low Stock – Negative Threshold (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/lowstock?threshold=-1",
+              "host": ["{{base_url}}"],
+              "path": ["products", "lowstock"],
+              "query": [{ "key": "threshold", "value": "-1" }]
+            },
+            "description": "TC-LS06 – Negative threshold rejected by controller guard. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-LS06 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('TC-LS06 Error message correct', function () {",
+                  "    pm.expect(pm.response.text()).to.include('Threshold must be zero or greater');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-LS07 Get Low Stock – Non-Integer Threshold (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/lowstock?threshold=abc",
+              "host": ["{{base_url}}"],
+              "path": ["products", "lowstock"],
+              "query": [{ "key": "threshold", "value": "abc" }]
+            },
+            "description": "TC-LS07 – Non-integer threshold rejected by model binding. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-LS07 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 – POST /api/products",
+      "item": [
+        {
+          "name": "TC-P01 Create Product – Valid (All Fields)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Orange Juice\",\n  \"category\": \"Beverages\",\n  \"price\": 3.49,\n  \"quantity\": 100,\n  \"expiryDate\": \"2026-12-31T00:00:00Z\",\n  \"imageUrl\": \"https://example.com/orange-juice.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P01 / TC-P03 / TC-P04 – Creates a product with all valid fields. Auto-saves new ID to {{new_product_id}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P01 Status 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var json = pm.response.json();",
+                  "",
+                  "pm.test('TC-P01 Response has a numeric id', function () {",
+                  "    pm.expect(json.id).to.be.a('number').and.above(0);",
+                  "});",
+                  "",
+                  "pm.test('TC-P01 Name matches submitted value', function () {",
+                  "    pm.expect(json.name).to.eql('Orange Juice');",
+                  "});",
+                  "",
+                  "pm.test('TC-P01 Price matches submitted value', function () {",
+                  "    pm.expect(json.price).to.eql(3.49);",
+                  "});",
+                  "",
+                  "pm.test('TC-P01 isLowStock false for qty=100', function () {",
+                  "    pm.expect(json.isLowStock).to.be.false;",
+                  "});",
+                  "",
+                  "pm.test('TC-P03 Location header present', function () {",
+                  "    pm.expect(pm.response.headers.get('Location')).to.include('/api/products/');",
+                  "});",
+                  "",
+                  "pm.test('TC-P04 createdAt is set', function () {",
+                  "    pm.expect(json.createdAt).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test('TC-GI03 updatedAt is null on new product', function () {",
+                  "    pm.expect(json.updatedAt).to.be.null;",
+                  "});",
+                  "",
+                  "// Auto-save the new product ID for PUT / DELETE tests",
+                  "pm.environment.set('new_product_id', json.id);",
+                  "console.log('Auto-set new_product_id =', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P02 Create Product – No Image URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sparkling Water\",\n  \"category\": \"Beverages\",\n  \"price\": 1.25,\n  \"quantity\": 200,\n  \"expiryDate\": \"2027-06-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P02 – imageUrl is optional. Expects 201 and imageUrl=null in response."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P02 Status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('TC-P02 imageUrl is null', function () {",
+                  "    pm.expect(pm.response.json().imageUrl).to.be.null;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P05 Create Product – Name Min Length (2 chars)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AB\",\n  \"category\": \"Other\",\n  \"price\": 1.00,\n  \"quantity\": 0,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P05 – Name of exactly 2 characters should pass StringLength(min=2) validation."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P05 Status 201 for min-length name', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('TC-P08 Qty=0 gives isLowStock=true', function () {",
+                  "    pm.expect(pm.response.json().isLowStock).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P07 Create Product – Price at Minimum (0.01)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Penny Candy\",\n  \"category\": \"Confectionery\",\n  \"price\": 0.01,\n  \"quantity\": 200,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P07 – Price of 0.01 is the minimum allowed. Expects 201."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P07 Status 201 for min price 0.01', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('TC-P07 Price is 0.01', function () {",
+                  "    pm.expect(pm.response.json().price).to.eql(0.01);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P09 Create Product – Past Expiry Date",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Old Stock Item\",\n  \"category\": \"Other\",\n  \"price\": 1.00,\n  \"quantity\": 5,\n  \"expiryDate\": \"2020-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P09 – DTO has no past-date restriction. Expects 201 and isExpired=true in response."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P09 Status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('TC-P09 isExpired is true for past expiry', function () {",
+                  "    pm.expect(pm.response.json().isExpired).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P11 Create Product – Missing Name (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P11 – Missing required Name field. Expects 400 Bad Request."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P11 Status 400 for missing name', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P12 Create Product – Name Too Short (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\",\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P12 – 1-char name violates StringLength(MinimumLength=2). Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P12 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P17 Create Product – Price Zero (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Free Sample\",\n  \"category\": \"Dairy\",\n  \"price\": 0,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P17 – Price=0 violates Range(min=0.01). Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P17 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P18 Create Product – Negative Price (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Negative Priced Item\",\n  \"category\": \"Dairy\",\n  \"price\": -5.00,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P18 – Negative price violates Range(min=0.01). Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P18 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P20 Create Product – Negative Quantity (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Negative Stock\",\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": -1,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P20 – Quantity=-1 violates Range(min=0). Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P20 Status 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P23 Create Product – Invalid Image URL (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bad Image Product\",\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\",\n  \"imageUrl\": \"not-a-valid-url\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P23 – imageUrl fails [Url] attribute validation. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P23 Status 400 for invalid imageUrl', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-P24 Create Product – Empty Body (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": ["{{base_url}}"],
+              "path": ["products"]
+            },
+            "description": "TC-P24 – Empty body triggers all required-field validation errors. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-P24 Status 400 for empty body', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 – PUT /api/products/{id}",
+      "item": [
+        {
+          "name": "TC-U01 Update Product – Valid Payload",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Skimmed Milk\",\n  \"category\": \"Dairy\",\n  \"price\": 1.79,\n  \"quantity\": 45,\n  \"expiryDate\": \"2026-06-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-U01 / TC-U02 / TC-U03 – Updates the product created by TC-P01. Checks updatedAt is set."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U01 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var json = pm.response.json();",
+                  "",
+                  "pm.test('TC-U01 Name updated', function () {",
+                  "    pm.expect(json.name).to.eql('Skimmed Milk');",
+                  "});",
+                  "",
+                  "pm.test('TC-U01 Price updated', function () {",
+                  "    pm.expect(json.price).to.eql(1.79);",
+                  "});",
+                  "",
+                  "pm.test('TC-U02 updatedAt is now set (not null)', function () {",
+                  "    pm.expect(json.updatedAt).to.be.a('string').and.not.empty;",
+                  "});",
+                  "",
+                  "pm.test('TC-U05 isLowStock still false for qty=45', function () {",
+                  "    pm.expect(json.isLowStock).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-U05 Update Product – Quantity to 0 (isLowStock true)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Skimmed Milk\",\n  \"category\": \"Dairy\",\n  \"price\": 1.79,\n  \"quantity\": 0,\n  \"expiryDate\": \"2026-06-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-U05 – Setting quantity to 0 should result in isLowStock=true."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U05 Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('TC-U05 quantity=0 gives isLowStock=true', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.quantity).to.eql(0);",
+                  "    pm.expect(json.isLowStock).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-U09 Update Product – Non-Existent ID (404)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ghost Product\",\n  \"category\": \"Other\",\n  \"price\": 1.00,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/99999",
+              "host": ["{{base_url}}"],
+              "path": ["products", "99999"]
+            },
+            "description": "TC-U09 – PUT on non-existent ID. Expects 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U09 Status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-U10 Update Product – Missing Name (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-U10 – Missing name in PUT body. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U10 Status 400 for missing name', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-U12 Update Product – Price Zero (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Milk\",\n  \"category\": \"Dairy\",\n  \"price\": 0,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-U12 – price=0 violates Range(min=0.01). Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U12 Status 400 for price=0', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-U16 Update Product – String ID (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Milk\",\n  \"category\": \"Dairy\",\n  \"price\": 1.99,\n  \"quantity\": 10,\n  \"expiryDate\": \"2027-01-01T00:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/abc",
+              "host": ["{{base_url}}"],
+              "path": ["products", "abc"]
+            },
+            "description": "TC-U16 – String ID rejected by route constraint {id:int}. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-U16 Status 400 for string ID', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 – DELETE /api/products/{id}",
+      "item": [
+        {
+          "name": "TC-DEL04 Delete Non-Existent Product (404)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/99999",
+              "host": ["{{base_url}}"],
+              "path": ["products", "99999"]
+            },
+            "description": "TC-DEL04 – Delete non-existent ID. Expects 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-DEL04 Status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-DEL06 Delete Product – String ID (400)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/abc",
+              "host": ["{{base_url}}"],
+              "path": ["products", "abc"]
+            },
+            "description": "TC-DEL06 – String ID rejected by route constraint. Expects 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-DEL06 Status 400 for string ID', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-DEL01 Delete Product – Valid ID (204)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-DEL01 – Deletes the product created by TC-P01. Expects 204 No Content.\nRun AFTER all PUT tests since this removes {{new_product_id}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-DEL01 Status 204 No Content', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  "",
+                  "pm.test('TC-DEL01 Body is empty', function () {",
+                  "    pm.expect(pm.response.text()).to.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-DEL02 Verify Deleted Product Returns 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-DEL02 – After TC-DEL01 deletes {{new_product_id}}, GET should return 404."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-DEL02 Deleted product returns 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "TC-DEL05 Delete Same Product Twice (Second = 404)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/{{new_product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["products", "{{new_product_id}}"]
+            },
+            "description": "TC-DEL05 – Second delete of already-deleted ID. Expects 404 (not 500 or 204)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('TC-DEL05 Second delete returns 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

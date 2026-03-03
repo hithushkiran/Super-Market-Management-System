@@ -1,0 +1,9 @@
+# Use this workspace to collaborate
+workspace:
+  id: 9497c08c-6603-4d73-81c5-2c0f306651f9
+
+localResources:
+  collections:
+    - ..\docs\postman\SupermarketAPI.postman_collection.json
+  environments:
+    - ..\docs\postman\SupermarketAPI.postman_environment.json
