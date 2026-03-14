@@ -1,0 +1,33 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace SupermarketAPI.Models.DTOs;
+
+public class RegisterDto
+{
+    [Required]
+    [StringLength(100, MinimumLength = 2)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [EmailAddress]
+    [StringLength(100)]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
+    [MinLength(8)]
+    [StringLength(100)]
+    public string Password { get; set; } = string.Empty;
+
+    [Required]
+    [Compare(nameof(Password))]
+    public string ConfirmPassword { get; set; } = string.Empty;
+
+    public UserRole Role { get; set; } = UserRole.Customer;
+
+    [StringLength(500)]
+    public string? Address { get; set; }
+
+    [Phone]
+    [StringLength(20)]
+    public string? Phone { get; set; }
+}
